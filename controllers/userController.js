@@ -1,6 +1,7 @@
 import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
 import generateTokenAndSetCookie from '../utils/generateTokenAndSetCookie.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 const signupUser = async (req, res) => {
   try {
@@ -36,6 +37,8 @@ const signupUser = async (req, res) => {
         name: newUser.name,
         username: newUser.username,
         email: newUser.email,
+        bio: newUser.bio,
+        profilePic: newUser.profilePic,
       });
     }
   } catch (error) {
@@ -70,6 +73,8 @@ const loginUser = async (req, res) => {
       name: user.name,
       username: user.username,
       email: user.email,
+      bio: user.bio,
+      profilePic: user.profilePic,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -126,7 +131,8 @@ const followUnFollowUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { name, username, email, password, profilePic, bio } = req.body;
+  const { name, username, email, password, bio } = req.body;
+  let { profilePic } = req.body;
   const userId = req.user._id;
 
   try {
@@ -143,6 +149,18 @@ const updateUser = async (req, res) => {
       user.password = hashedPassword;
     }
 
+    if (profilePic) {
+      if (user.profilePic) {
+        // https://res.cloudinary.com/dpusogfxp/image/upload/v1696651712/sguwkmgvmnzcncoob6ms.jpg
+        // sguwkmgvmnzcncoob6ms get by splitting on / and then on .
+        const imageId = user.profilePic.split('/').pop().split('.')[0];
+        await cloudinary.uploader.destroy(imageId);
+      }
+
+      const uploadResponse = await cloudinary.uploader.upload(profilePic);
+      profilePic = uploadResponse.secure_url;
+    }
+
     if (name) user.name = name;
     if (username) user.username = username;
     if (email) user.email = email;
@@ -151,10 +169,9 @@ const updateUser = async (req, res) => {
 
     user = await user.save();
 
-    res.status(200).json({
-      message: 'User updated successfully',
-      user,
-    });
+    user.password = undefined;
+
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
     console.log('Error in updateUser: ', error.message);
