@@ -161,7 +161,7 @@ const getFeedPosts = async (req, res) => {
     // .populate('postedBy', 'username profilePic')
     // .populate('replies.userId', 'username profilePic');
 
-    res.status(200).json({ posts });
+    res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ error: error.message });
     console.log('Error in getFeedPosts: ', error.message);
