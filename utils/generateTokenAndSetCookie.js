@@ -8,7 +8,6 @@ export default function generateTokenAndSetCookie(userId, res) {
   res.cookie('jwt', token, {
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 15,
-    sameSite: 'strict',
   });
 
   return token;
