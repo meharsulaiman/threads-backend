@@ -1,7 +1,6 @@
 {
   "version": "1.0.0",
   "name": "nodejs-express-mongoose-demo",
-  "description": "nodejs-express-mongoose-demo",
   "build": [{ "src": "server.js", "use": "@vercel/node" }],
   "routes": [
     { "src": "/(.*)", "dest": "/server.js" }
