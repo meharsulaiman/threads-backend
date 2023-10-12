@@ -4,11 +4,18 @@ import connectDB from './db/connectDB.js';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { v2 as cloudinary } from 'cloudinary';
+import cors from 'cors';
 
 dotenv.config();
 connectDB();
 
 const app = express();
+
+app.use(
+  cors({
+    origin: process.env.FRONT_END,
+  })
+);
 
 app.use(
   express.json({
