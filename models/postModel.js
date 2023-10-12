@@ -36,7 +36,7 @@ const postSchema = mongoose.Schema(
         userProfilePic: {
           type: String,
         },
-        userName: {
+        username: {
           type: String,
         },
       },
