@@ -26,6 +26,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
 // Routes
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
